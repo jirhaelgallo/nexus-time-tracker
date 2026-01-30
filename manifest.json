@@ -1,0 +1,17 @@
+{
+  "name": "Nexus AI Time Tracker",
+  "short_name": "Nexus AI",
+  "description": "AI-powered simultaneous time tracking.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2972/2972531.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
