@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus AI Time Tracker</title>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1d4ed8">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -27,7 +31,6 @@
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
 
-        /* Smooth slide-up for mobile modals */
         @keyframes slideUp {
             from { transform: translateY(100%); }
             to { transform: translateY(0); }
@@ -91,7 +94,7 @@
             <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">Active Timers</h2>
-                    <p class="text-slate-500">Track up to 5 concurrent tasks.</p>
+                    <p class="text-slate-500">Track task in real-time.</p>
                 </div>
                 <button onclick="addNewTimer()" class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-xl shadow-md hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
                     <i class="fas fa-plus"></i> New Task
@@ -211,11 +214,20 @@
     </main>
 
     <script>
-        // State
+        // PWA Service Worker Registration - Updated path to service-worker.js
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW Registered'))
+                    .catch(err => console.log('SW Failed', err));
+            });
+        }
+
+        // State Management
         let timers = [];
         let history = JSON.parse(localStorage.getItem('nexus_history_v2')) || [];
         let editingId = null;
-        let editSource = 'timer'; // 'timer' or 'history'
+        let editSource = 'timer';
         let categoryChart = null;
         let dailyChart = null;
 
@@ -226,7 +238,6 @@
             setupVoice();
         };
 
-        // Navigation Logic
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -247,7 +258,6 @@
             if (window.innerWidth < 768) toggleSidebar();
         }
 
-        // Timer Operations
         function addNewTimer(name = "New Task", initialSeconds = 0) {
             if (timers.length >= 5) return;
             const id = Date.now() + Math.random();
@@ -296,7 +306,6 @@
             }
         }
 
-        // History Operations
         function deleteHistoryItem(id) {
             history = history.filter(item => item.id !== id);
             saveAndRefresh();
@@ -322,7 +331,6 @@
             if (!document.getElementById('analytics').classList.contains('hidden')) updateCharts();
         }
 
-        // Modals
         function openEditModal(id, source = 'timer') {
             editingId = id;
             editSource = source;
@@ -366,7 +374,6 @@
             closeEditModal();
         }
 
-        // UI Helpers
         function formatTime(s) {
             const h = Math.floor(s / 3600);
             const m = Math.floor((s % 3600) / 60);
@@ -453,7 +460,6 @@
             });
         }
 
-        // Voice Command Handling
         function setupVoice() {
             const btn = document.getElementById('voiceBtn');
             const status = document.getElementById('voiceStatus');
@@ -509,7 +515,6 @@
             }
         }
 
-        // Analytics
         function initCharts() {
             const config = { responsive: true, maintainAspectRatio: false };
             
@@ -537,7 +542,6 @@
                 return;
             }
 
-            // Aggregate by Activity Name
             const catMap = {};
             history.forEach(h => {
                 catMap[h.name] = (catMap[h.name] || 0) + (h.seconds / 60);
@@ -546,7 +550,6 @@
             categoryChart.data.datasets[0].data = Object.values(catMap);
             categoryChart.update();
 
-            // Aggregate by Day
             const dayMap = {};
             history.forEach(h => {
                 dayMap[h.date] = (dayMap[h.date] || 0) + (h.seconds / 60);
