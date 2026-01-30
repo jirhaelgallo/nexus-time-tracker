@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus AI Time Tracker</title>
+    
     <!-- PWA Manifest Link -->
     <link rel="manifest" href="manifest.json">
+    
+    <!-- Meta tags for mobile experience -->
     <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nexus AI">
+    
+    <!-- App Icon for iOS (Legacy support) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%232563eb'/%3E%3Ccircle cx='256' cy='256' r='180' fill='none' stroke='white' stroke-width='30'/%3E%3Cpolyline points='256 120 256 256 340 300' fill='none' stroke='white' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -232,7 +242,7 @@
     </main>
 
     <script>
-        // PWA Service Worker Registration - Updated path to service-worker.js
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
